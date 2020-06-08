@@ -1,20 +1,22 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src)
+import Html exposing (Html, div, h1, img, input, text)
+import Html.Attributes exposing (class, placeholder, src, type_)
+import Html.Events exposing (onInput)
+
 
 
 ---- MODEL ----
 
 
 type alias Model =
-    {}
+    { search : String }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( { search = "" }, Cmd.none )
 
 
 
@@ -22,12 +24,14 @@ init =
 
 
 type Msg
-    = NoOp
+    = EnteredSearch String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        EnteredSearch search ->
+            ( { model | search = String.reverse search }, Cmd.none )
 
 
 
@@ -36,9 +40,9 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working great!" ]
+    div [ class "container" ]
+        [ h1 [] [ text model.search ]
+        , input [ type_ "text", class "search-input", placeholder "Type something to search", onInput EnteredSearch ] []
         ]
 
 
