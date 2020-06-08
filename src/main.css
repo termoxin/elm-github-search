@@ -9,18 +9,38 @@
   height: inherit;
 }
 
+html {
+  font-size: 10px;
+}
+
 body {
-  font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
+  font-family: "Source Sans Pro", "Trebuchet MS", "Lucida Grande",
+    "Bitstream Vera Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   text-align: center;
   color: #293c4b;
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 3rem;
 }
 
 img {
   margin: 20px 0;
   max-width: 200px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 50px;
+}
+
+.search-input {
+  font-size: 1.7rem;
+  padding: 10px;
+  margin-top: 10px;
+  width: 300px;
 }
