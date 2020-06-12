@@ -9,6 +9,14 @@
   height: inherit;
 }
 
+*,
+*:after,
+*:before {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 html {
   font-size: 10px;
 }
@@ -22,11 +30,10 @@ body {
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: 2rem;
 }
 
 img {
-  margin: 20px 0;
   max-width: 200px;
 }
 
@@ -42,13 +49,51 @@ img {
   font-size: 1.7rem;
   padding: 10px;
   margin-top: 10px;
-  width: 300px;
-}
-
-.search-button {
-  margin-top: 15px;
+  width: 450px;
 }
 
 .user-name {
   font-size: 1.5rem;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  width: 450px;
+  margin-top: 20px;
+}
+
+.buttons-container button {
+  background: gray;
+  border: 0;
+  color: #fff;
+  padding: 10px;
+  font-size: 1.5rem;
+}
+
+.container .content-container {
+  display: flex;
+  margin: 20px 0;
+}
+
+.container .content-container ol {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
+
+.container .content-container ol li {
+  font-size: 1.3rem;
+}
+
+.content-container {
+  display: flex;
+  width: 450px;
+  justify-content: space-between;
+}
+
+.content-container h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
