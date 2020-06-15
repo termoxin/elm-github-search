@@ -1,24 +1,16 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, a, button, div, h1, img, input, li, ol, p, strong, text, ul)
+import Decoder exposing (Repository, User, repositoryDecoder, userDecoder)
+import Html exposing (Html, a, button, div, h1, img, input, li, ol, p, text)
 import Html.Attributes exposing (alt, class, href, placeholder, src, target, type_)
 import Html.Events exposing (onClick, onInput)
 import Http
-import Json.Decode as Decode exposing (Decoder, list, string)
-import Json.Decode.Pipeline exposing (optional, required)
+import Json.Decode exposing (list)
 
 
 
 ---- MODEL ----
-
-
-type alias User =
-    { username : String
-    , name : String
-    , photoUrl : String
-    , link : String
-    }
 
 
 type alias Model =
@@ -26,13 +18,6 @@ type alias Model =
     , search : String
     , user : User
     , repos : List Repository
-    }
-
-
-type alias Repository =
-    { name : String
-    , link : String
-    , description : String
     }
 
 
@@ -58,10 +43,10 @@ init =
 
 type Msg
     = EnteredSearch String
-    | GotUser (Result Http.Error User)
     | SearchUser
     | FetchRepos
     | GotRepos (Result Http.Error (List Repository))
+    | GotUser (Result Http.Error User)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -79,40 +64,25 @@ update msg model =
 
         SearchUser ->
             let
-                responseDecoder : Decoder User
-                responseDecoder =
-                    Decode.succeed User
-                        |> required "login" string
-                        |> required "name" string
-                        |> required "avatar_url" string
-                        |> required "url" string
-
-                cmd : Cmd Msg
-                cmd =
+                getUser : Cmd Msg
+                getUser =
                     Http.get
                         { url = "https://api.github.com/users/" ++ model.search
-                        , expect = Http.expectJson GotUser responseDecoder
+                        , expect = Http.expectJson GotUser userDecoder
                         }
             in
-            ( model, cmd )
+            ( model, getUser )
 
         FetchRepos ->
             let
-                responseDecoder : Decoder Repository
-                responseDecoder =
-                    Decode.succeed Repository
-                        |> required "name" string
-                        |> required "html_url" string
-                        |> optional "description" string ""
-
-                cmd : Cmd Msg
-                cmd =
+                getRepos : Cmd Msg
+                getRepos =
                     Http.get
                         { url = "https://api.github.com/users/" ++ model.search ++ "/repos"
-                        , expect = Http.expectJson GotRepos (list responseDecoder)
+                        , expect = Http.expectJson GotRepos (list repositoryDecoder)
                         }
             in
-            ( model, cmd )
+            ( model, getRepos )
 
         GotRepos (Ok repos) ->
             ( { model | repos = repos }, Cmd.none )
@@ -126,7 +96,7 @@ update msg model =
 ---- VIEW ----
 
 
-viewUser : User -> Html Msg
+viewUser : User -> Html msg
 viewUser user =
     div [ class "user-container" ]
         [ img [ src user.photoUrl, alt user.username ] []
@@ -142,12 +112,12 @@ viewUser user =
         ]
 
 
-viewRepository : Repository -> Html Msg
+viewRepository : Repository -> Html msg
 viewRepository repo =
     li [ class "repository" ] [ a [ href repo.link, target "__blank" ] [ text repo.name ] ]
 
 
-viewRepositories : User -> List Repository -> Html Msg
+viewRepositories : User -> List Repository -> Html msg
 viewRepositories user repos =
     if not (String.isEmpty user.name) then
         if List.isEmpty repos then
